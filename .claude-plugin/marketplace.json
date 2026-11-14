@@ -1,0 +1,11 @@
+{
+  "name": "thinking-tools",
+  "owner": { "name": "Thinking System" },
+  "plugins": [
+    {
+      "name": "thinking-system",
+      "source": "./plugins/thinking-system",
+      "description": "Structured thinking coach with framing, first-principles analysis, cost-based decisions, subagents and a decision journal."
+    }
+  ]
+}
