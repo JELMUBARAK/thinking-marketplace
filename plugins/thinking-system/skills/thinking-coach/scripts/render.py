@@ -9,8 +9,17 @@ from journals, web pages or files can't inject markup.
 Usage:
   render.py FILE.json [--out OUT.html] [--local] [--no-archive]
   render.py -  ...                     (read the JSON from stdin)
+  render.py --part NAME -              (merge a JSON fragment from stdin into a draft)
+  render.py --build NAME [--out ...] [--local] [--no-archive]
+                                       (render the draft, then delete it)
 
-  --out PATH     where to write the HTML (default: <journal dir>/pages/<name>.html)
+  --part / --build let a long record arrive in several small heredocs: the
+  Bash tool on Windows cuts commands at about 8,000 characters, which breaks a
+  single heredoc holding a whole decision page. Fragments are deep-merged
+  (objects merge key by key, anything else is replaced), so send e.g. the
+  header and summary first, then a few stages per part.
+
+  --out PATH    where to write the HTML (default: <journal dir>/pages/<name>.html)
   --local        write a full standalone document (doctype, html, body) to open
                  in a browser; without it the file is shaped for Artifact publish,
                  which adds that skeleton itself
@@ -25,6 +34,7 @@ import json
 import os
 import re
 import sys
+import tempfile
 from datetime import date
 
 JOURNAL = os.path.expanduser(
@@ -364,11 +374,57 @@ def page_name(data):
     return base + ("-review" if data.get("page") == "review" else "")
 
 
+def draft_path(name):
+    safe = re.sub(r"[^A-Za-z0-9_.-]+", "-", name).strip("-.") or "decision"
+    return os.path.join(tempfile.gettempdir(), "thinking-system-drafts", safe + ".json")
+
+
+def merge(base, extra):
+    for k, v in extra.items():
+        if isinstance(v, dict) and isinstance(base.get(k), dict):
+            merge(base[k], v)
+        else:
+            base[k] = v
+    return base
+
+
+def add_part(name):
+    try:
+        part = json.loads(sys.stdin.read())
+    except json.JSONDecodeError as e:
+        sys.exit(f"error: could not read JSON part: {e}")
+    if not isinstance(part, dict):
+        sys.exit("error: a part must be a JSON object")
+    path = draft_path(name)
+    data = {}
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+    merge(data, part)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False)
+    print(f"part saved: {name} (stages so far: {', '.join(data.get('stages', {})) or 'none'})")
+
+
 def main():
     args = sys.argv[1:]
     if not args or args[0] in ("-h", "--help"):
         print(__doc__)
         return
+    if args[0] == "--part":
+        if len(args) != 3 or args[2] != "-":
+            sys.exit("usage: render.py --part NAME -   (JSON fragment on stdin)")
+        add_part(args[1])
+        return
+    draft = None
+    if args[0] == "--build":
+        if len(args) < 2:
+            sys.exit("usage: render.py --build NAME [--out OUT.html] [--local] [--no-archive]")
+        draft = draft_path(args[1])
+        if not os.path.exists(draft):
+            sys.exit(f"error: no draft for {args[1]}; send it with --part first")
+        args = [draft] + args[2:]
     src, out, local, archive = args[0], None, False, True
     i = 1
     while i < len(args):
@@ -406,6 +462,8 @@ def main():
         with open(jpath, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=1)
         print(f"process_file: {jpath}")
+    if draft:
+        os.remove(draft)
     if os.environ.get("THINKING_NO_PUBLISH"):
         print("publish: off")
 

@@ -4,12 +4,21 @@ At the Close, the whole process becomes one page the user can keep and share. Yo
 
 ## Steps (after the journal `add` has returned the id)
 1. Build the JSON below from what was established in this conversation. Use the user's real figures and your tagged estimates exactly as they were shown. Never fill a stage that didn't run.
-2. Render it. Pass the JSON on stdin with a heredoc, as one command that starts with `python3` (no temp file, no `cat` pipe, no `cd` first):
-   ```
-   python3 "<skill dir>/scripts/render.py" - --out "<path>.html" <<'EOF'
-   { ...the JSON... }
-   EOF
-   ```
+2. Render it. Every command starts with `python3` (no `cat` pipe, no `cd` first). Never put the whole JSON in one heredoc: the Bash tool on Windows cuts commands at about 8,000 characters, and a full page is usually longer, so the command breaks with "unexpected EOF".
+   - If you can write files (a Write tool): write the JSON to `<scratchpad>/<journal id>.json` (or the journal's `pages` folder when there's no scratchpad) and render that file:
+     ```
+     python3 "<skill dir>/scripts/render.py" "<that file>.json" --out "<path>.html"
+     ```
+   - If you can't write files: send the JSON in parts, each heredoc under about 4,000 characters, then build. Parts merge key by key, so send the header and `summary` first, then a few `stages` per part:
+     ```
+     python3 "<skill dir>/scripts/render.py" --part <journal id> - <<'EOF'
+     {"page": "decision", "title": "...", "summary": {...}, "stages": {"clarity": {...}, "stakes": {...}}}
+     EOF
+     ```
+     Repeat `--part` for the remaining stages, then:
+     ```
+     python3 "<skill dir>/scripts/render.py" --build <journal id> --out "<path>.html"
+     ```
    - Out path: `<scratchpad>/<journal id>.html` when your system prompt lists a scratchpad directory; otherwise leave `--out` off (it goes to the journal's `pages` folder).
    - If the journal was declined in this conversation, add `--no-archive`.
    - The script prints `html:` and `process_file:` paths. If it prints `publish: off`, don't publish: give the user the HTML path instead.
