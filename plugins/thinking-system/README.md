@@ -26,6 +26,7 @@ A structured thinking coach for hard problems and decisions, with long-term memo
 ## How to use
 
 - "Help me think through [problem]" starts the coach. "Run it all" skips the pauses.
+- "Stress-test my plan: [plan]" questions you about the plan in short rounds (at most 3), then audits the assumptions it surfaces.
 - "Review my decision on [X]" closes the loop.
 
 - "What's the conclusion?" at any point gives a provisional summary that names the skipped stages.
