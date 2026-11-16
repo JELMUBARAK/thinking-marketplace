@@ -23,6 +23,7 @@ The decision journal is managed by `journal.py` in the thinking-coach skill's `s
 5. Write the lesson as one reusable pattern: "When [situation signals], expect [effect]; adjust [estimate or action] by [amount]."
 6. Save it: `update ID` with `{"status":"reviewed","actual_result":...,"actual_cost":<number>,"predictions":[{"claim":...,"p":...,"came_true":true/false}],"diagnosis":...,"lesson":...}`. The script computes the delta.
 7. Show the updated calibration from `stats` in 1-2 lines, with a caution if there are fewer than 5 reviewed decisions.
-8. If the review shows the chosen solution should be re-audited (one of its saved re-audit triggers happened), say so and offer to run the thinking coach on it.
+8. Make the review page, automatically: follow the "Review page" section of `references/decision-page.md` in the thinking-coach skill (`<this skill's base directory>/../thinking-coach/`). Render it with that skill's `scripts/render.py`, linking back to the decision's `artifact_url` if the record has one. Publish it as its own Artifact, never over the decision page, and save the link with `update ID` as `review_artifact_url`. If the Artifact tool isn't available, give the local HTML path instead.
+9. If the review shows the chosen solution should be re-audited (one of its saved re-audit triggers happened), say so and offer to run the thinking coach on it.
 
 Keep it short: the gap table, the diagnosis in 2-4 bullets, the lesson line, the calibration update. Be honest, not harsh: the aim is to get better at estimating, not to assign blame.

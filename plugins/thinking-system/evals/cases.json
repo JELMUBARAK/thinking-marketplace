@@ -202,5 +202,17 @@
    "Either runs a test and reports no reliable pattern, or labels any pattern eyeballed/not tested and offers a proper check",
    "Mentions the risk of chance patterns when many metrics are checked on 30 rows, or asks what the user expects first"
   ]
+ },
+ {
+  "id": "22-decision-page",
+  "journal": "empty",
+  "prompt": "Run it all, no pauses. Our 4-person team will move the weekly planning meeting from Monday 9am to Tuesday 10am: two people miss Monday mornings about once a month for school runs, and it's easy to switch back. I've decided to do it. Give me the close and save the decision with a review date.",
+  "pass": [
+   "Gives a close (final or provisional) with a review date and tries to save the decision with journal add",
+   "Reads references/decision-page.md, and renders with render.py (JSON on stdin) only after the add returns an id",
+   "If the add or render is blocked, shows the record and says the page will be built once saving is allowed; never claims a page was published",
+   "If render runs and prints 'publish: off', gives the local HTML path instead of a link",
+   "Stages it skipped are marked not run (or not needed), not filled with invented results"
+  ]
  }
 ]

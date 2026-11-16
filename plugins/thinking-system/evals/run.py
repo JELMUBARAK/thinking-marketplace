@@ -2,7 +2,8 @@
 
 Each case calls `claude -p "/thinking-system:thinking-coach <prompt>"` with this
 plugin loaded via --plugin-dir and a throwaway journal (THINKING_JOURNAL), so
-your real decision journal is never touched. Subagents, Write and Edit are
+your real decision journal is never touched. THINKING_NO_PUBLISH is set, so
+decision pages are rendered but never published. Subagents, Write and Edit are
 disabled. Results land in evals/<EVAL_OUT>/<case>.json with the reply, every
 tool call made, cost, and the journal file afterwards. Grade them by hand
 against each case's "pass" criteria in cases.json.
@@ -55,7 +56,7 @@ def run(case):
     with open(jpath, "w", encoding="utf-8") as f:
         for r in SEEDS.get(case["journal"], []):
             f.write(json.dumps(r) + "\n")
-    env = dict(os.environ, THINKING_JOURNAL=jpath)
+    env = dict(os.environ, THINKING_JOURNAL=jpath, THINKING_NO_PUBLISH="1")
     cmd = [CLAUDE, "-p", f"/thinking-system:thinking-coach {case['prompt']}",
            "--plugin-dir", PLUGIN, "--model", MODEL, "--max-budget-usd", "1",
            "--no-session-persistence", "--output-format", "stream-json", "--verbose",

@@ -21,6 +21,13 @@ A structured thinking coach for hard problems and decisions, with long-term memo
 - A power check says whether the data can settle that at all. Patterns are then tested with shuffle tests and split-half checks and graded strong, weak (a hypothesis to test) or noise. "No reliable pattern" is a valid answer.
 - Everything runs on Python's standard library. PDF and old Excel reading use bundled copies of pypdf 7.1.0 and xlrd 2.0.2 (BSD licenses in `scripts/vendor/`). Refresh them now and then, since PDF parsers get security fixes: `pip download pypdf xlrd --no-deps --only-binary=:all:` and replace the folders. Scanned PDFs and images need OCR, which isn't supported. Old .doc files need resaving as .docx.
 
+**Decision page**
+- At the close, the coach turns the whole process into one page and publishes it as a private Artifact on claude.ai, automatically. The page shows the close summary first, then every stage in order: problem card, system type, problem tree and feedback loops, audited assumptions, hard limits, options with costs and arithmetic, pre-mortem, tests and the red-team verdict.
+- Stages that didn't run show as "Not run" with what they would have checked, and the page is marked provisional.
+- The layout is fixed: Claude writes the content as JSON and `scripts/render.py` builds the page (all text escaped). The JSON is kept in `~/.claude/thinking-system/pages/`, and the link goes into the journal.
+- After a decision review, a separate review page (expected vs actual, diagnosis, lesson) links back to the decision page.
+- Without the Artifact tool (for example in a chat app or a headless run), you get a local HTML file instead. Setting `THINKING_NO_PUBLISH=1` turns publishing off.
+
 **Model routing**
 - From its first reply, the coach sorts the job into a tier: light (haiku), standard (sonnet) or deep (opus).
 - Subagents run on the model their tier sets (librarian: haiku, researcher and quant: sonnet, red-team: opus) and step up one level only for harder jobs.

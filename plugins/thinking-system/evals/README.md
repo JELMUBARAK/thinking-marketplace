@@ -1,6 +1,6 @@
 # thinking-coach evals
 
-21 single-turn test cases for the `thinking-coach` skill. Each case targets one rule in `SKILL.md` (false premise, out-of-reach goal, chaotic emergency, prompt injection, unsourced base rates, safety hard limits, journal review, and so on) and lists its pass criteria. Cases 15–18 are reworded holdouts, so a fix can be checked on prompts it wasn't written for. Cases 19–21 cover the signal check with data pasted into the prompt: offering the check, too little data, and pure noise (the data in case 21 is random, and `signal_tests.py scan` finds no pair below p < 0.05).
+22 single-turn test cases for the `thinking-coach` skill. Each case targets one rule in `SKILL.md` (false premise, out-of-reach goal, chaotic emergency, prompt injection, unsourced base rates, safety hard limits, journal review, and so on) and lists its pass criteria. Cases 15–18 are reworded holdouts, so a fix can be checked on prompts it wasn't written for. Cases 19–21 cover the signal check with data pasted into the prompt: offering the check, too little data, and pure noise (the data in case 21 is random, and `signal_tests.py scan` finds no pair below p < 0.05). Case 22 says "run it all" on a small decision, so the coach reaches the close and renders the decision page. Runs set `THINKING_NO_PUBLISH`, so nothing is published.
 
 ## Run
 
