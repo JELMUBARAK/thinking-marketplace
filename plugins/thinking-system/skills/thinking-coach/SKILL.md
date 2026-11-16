@@ -31,6 +31,7 @@ Match the model to the job, so easy problems don't spend a large model's tokens 
 | Deep | Large, hard to undo, complex or safety-related; full mode | opus | librarian: haiku, researcher: sonnet, quant: sonnet, red-team: opus |
 
 - Unsure between two tiers: pick the higher one if anything is safety-related, otherwise the lower one, and settle it at the stakes check.
+- Stakes unknown (the opening message gives no hint of size or reversibility): start at Light, say "Tier: light - stakes not yet known", and settle it at the stakes check.
 - Chaotic: don't stop to route. Give the stabilizing actions on whatever model is running.
 - Main conversation: you can't change your own model; only the user can, with `/model`. If the model you are running on (named in your system prompt) is above the tier, say in one line that `/model <name>` would save tokens for this problem, then carry on. If it's below the Deep tier, recommend `/model opus` before Stage 1, and carry on if the user declines. Suggest it once per problem, and again only if the tier changes.
 - Subagents: pass the tier's model in the `model` parameter of each launch. Step a subagent up one level (haiku -> sonnet -> opus) only when its job is harder than usual: a researcher on a niche or very recent topic, or a quant with more than 3 options or linked risks.
@@ -49,6 +50,7 @@ Write each brief so it stands alone: the subagent sees nothing of this conversat
 ## Memory (decision journal)
 The plugin keeps long-term memory in a journal file through the script `scripts/journal.py` in this skill's base directory. Run it with `python3 <this skill's base directory>/scripts/journal.py <command>`. Commands: `due`, `find WORDS`, `stats [TAG]`, `add` (JSON on stdin, prints the new id), `update ID` (JSON on stdin), `get ID`, `path`. The journal lives outside the plugin (default `~/.claude/thinking-system/journal.jsonl`), so it survives plugin updates.
 - At the start: run `due`. If decisions are overdue for review, mention them in one line and offer to review them first.
+- If the user declines a journal command, don't retry it or ask why. Say in one line that the journal is skipped for this problem, carry on without it, and at the close show the record as a block instead of saving it. Ask once before running another journal command in the same conversation.
 - After the problem card is confirmed: in quick mode, run `find` with 2-3 keywords and mention any directly relevant lesson in one line. In full mode, the librarian does this (more thoroughly).
 - Use the user's calibration: if `stats` shows a consistent bias (for example costs run 25% over, or probabilities are overconfident), apply it to the new estimates, show the adjustment, and say it comes from their own record.
 - If writing is blocked (a read-only or planning mode), reading commands (`due`, `find`, `stats`, `get`) still work. For `add` or `update`, draft the exact JSON record, show it to the user, and save it as soon as writing is allowed. Never silently drop a record.
@@ -70,6 +72,8 @@ Show the score in one line, and route by it:
 - 4-5 (borderline): name the checks that failed, then ask the user one quick multiple-choice question: frame it briefly first, or go straight on.
 - 0-3: run the framing loop. A failed premise check always stops the process until it is resolved, whatever the score.
 - If the user brings a plan to be challenged rather than a problem to solve, run checks 5 and 6, then use the stress-test route (below) instead of scoring the rest.
+- Out of reach: if the goal can't be achieved as stated (an open problem such as the Riemann Hypothesis, something physically or logically impossible, or an outcome nobody controls), say so plainly in one line. Don't pretend the process can solve it. Then look for the nearest decision the user can act on (what to learn, whether to spend time on it, how to test an idea of theirs) and offer it in the framing loop.
+- No decision behind it: if the message is a question or a topic rather than a choice (explain X, what is Y), offer two routes in one multiple-choice question: a direct explanation outside the coaching process, or finding the decision behind it through the framing loop. If the user picks the explanation, give it and leave the stages.
 If the user signals they just want an answer, give a short provisional answer based on the most likely framing, say what it assumes, and offer the framing loop instead of forcing it.
 
 ### Framing loop (only for unclear problems)
