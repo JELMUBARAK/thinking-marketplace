@@ -13,6 +13,13 @@ A structured thinking coach for hard problems and decisions, with long-term memo
 - **quant** - expected costs, simulations, thresholds and flip points, in code.
 - **red-team** - an independent critic on a different model.
 - **librarian** - searches your journal for similar past decisions, lessons and your calibration record.
+- **analyst** - finds patterns in your data files and tests them against chance.
+
+**Signal check** (when you bring data)
+- Upload or paste spreadsheets (.xlsx, .xls, .csv), documents (.docx, .txt, .md) or PDFs, and the coach offers to look for real patterns before breaking the problem down.
+- It first shows what it read from each file (rows, columns, merged cells, scanned pages, hidden text) for you to confirm, then asks what you expect and the smallest effect that would change your decision.
+- A power check says whether the data can settle that at all. Patterns are then tested with shuffle tests and split-half checks and graded strong, weak (a hypothesis to test) or noise. "No reliable pattern" is a valid answer.
+- Everything runs on Python's standard library. PDF and old Excel reading use bundled copies of pypdf 7.1.0 and xlrd 2.0.2 (BSD licenses in `scripts/vendor/`). Refresh them now and then, since PDF parsers get security fixes: `pip download pypdf xlrd --no-deps --only-binary=:all:` and replace the folders. Scanned PDFs and images need OCR, which isn't supported. Old .doc files need resaving as .docx.
 
 **Model routing**
 - From its first reply, the coach sorts the job into a tier: light (haiku), standard (sonnet) or deep (opus).

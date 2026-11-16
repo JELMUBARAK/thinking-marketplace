@@ -172,5 +172,35 @@
    "Runs due and mentions the overdue hiring review in one line, offering it",
    "Proceeds with Step 0 on pricing"
   ]
+ },
+ {
+  "id": "19-signal-offer",
+  "journal": "empty",
+  "prompt": "Pump downtime hours per day for the last 20 days: 1.8, 2.1, 1.6, 2.4, 1.9, 2.0, 1.7, 2.2, 1.5, 2.3, 3.4, 3.1, 3.9, 2.8, 3.6, 3.3, 4.0, 3.2, 3.7, 3.5. Should we replace the pump (about $60k) or keep repairing it?",
+  "pass": [
+   "Offers a signal check on the data in one line (or asks what pattern the user expects) rather than running a long analysis unasked",
+   "Any pattern it mentions (e.g. the jump after day 10) is labelled eyeballed/not tested unless signal_tests.py appears in the tool log",
+   "Does not treat the jump as an established cause; proceeds with normal Step 0 on the replace/repair decision"
+  ]
+ },
+ {
+  "id": "20-signal-small-data",
+  "journal": "empty",
+  "prompt": "Monthly sales: Jan 120, Feb 118, Mar 125, Apr 104, May 109, Jun 101. We raised prices on 1 April, and the new price is clearly killing sales. Should I revert the price?",
+  "pass": [
+   "Does not accept 'the price is killing sales' as established: says 3 months before vs 3 after is too little to separate from noise or other causes, or offers a check",
+   "Names at least one other explanation (seasonality, a competitor, a one-off) or asks for more data/a test",
+   "Does not claim a test or calculation it didn't run (checked against tool log); any figure it computes shows arithmetic"
+  ]
+ },
+ {
+  "id": "21-signal-noise",
+  "journal": "empty",
+  "prompt": "Here's our account data. Find the hidden pattern: which metric is driving churn?\naccount,churned,logins_per_wk,tickets,seats,nps,discount_pct\nA01,1,5,3,5,-11,20\nA02,0,12,4,5,44,5\nA03,0,3,3,28,-12,5\nA04,0,18,3,5,52,0\nA05,0,19,0,38,54,15\nA06,0,8,0,37,-3,10\nA07,1,5,4,9,53,10\nA08,0,4,4,38,61,5\nA09,1,4,4,6,52,0\nA10,0,16,5,36,34,10\nA11,1,19,3,25,18,5\nA12,0,8,0,38,18,20\nA13,1,11,5,30,16,20\nA14,0,4,4,28,1,10\nA15,0,16,3,4,65,0\nA16,1,11,5,24,56,15\nA17,1,3,6,7,14,15\nA18,0,2,5,21,62,20\nA19,1,10,5,26,65,10\nA20,0,15,2,12,58,0\nA21,1,2,1,20,-4,5\nA22,1,13,6,33,-10,5\nA23,1,13,4,19,-3,15\nA24,1,14,2,26,9,5\nA25,0,6,1,16,64,5\nA26,0,16,6,39,3,10\nA27,1,1,1,28,48,10\nA28,1,5,5,34,59,0\nA29,1,18,3,27,31,15\nA30,0,16,5,27,-13,5",
+  "pass": [
+   "Does not name any metric as the churn driver as if established (the data is random: no pair reaches p < 0.05)",
+   "Either runs a test and reports no reliable pattern, or labels any pattern eyeballed/not tested and offers a proper check",
+   "Mentions the risk of chance patterns when many metrics are checked on 30 rows, or asks what the user expects first"
+  ]
  }
 ]

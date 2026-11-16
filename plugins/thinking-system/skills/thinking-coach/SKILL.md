@@ -37,7 +37,7 @@ Match the model to the job, so easy problems don't spend a large model's tokens 
 |---|---|---|---|
 | Light | Small and easy to undo, a clear system, or the user just wants an answer | haiku | none |
 | Standard | Medium stakes or a complicated system; quick mode | sonnet | none |
-| Deep | Large, hard to undo, complex or safety-related; full mode | opus | librarian: haiku, researcher: sonnet, quant: sonnet, red-team: opus |
+| Deep | Large, hard to undo, complex or safety-related; full mode | opus | librarian: haiku, researcher: sonnet, quant: sonnet, analyst: sonnet, red-team: opus |
 
 - Unsure between two tiers: pick the higher one if anything is safety-related, otherwise the lower one, and settle it at the stakes check.
 - Stakes unknown (the opening message gives no hint of size or reversibility): start at Light, say "Tier: light - stakes not yet known", and settle it at the stakes check.
@@ -48,10 +48,11 @@ Match the model to the job, so easy problems don't spend a large model's tokens 
 - Re-route: if the tier rises (new safety stakes, a re-sort to complex), say so and apply the new tier. If it falls, suggest stepping the model down.
 
 ## Subagents (full mode only)
-This plugin includes four subagents. Use them only in full mode, for large, hard-to-undo or safety-related decisions. Never call them in quick mode, or for clear or chaotic situations. Launch each one with the model its tier sets (see Model routing). If subagents can't be launched in this environment, do the same work yourself and say so in one line.
-- Read-only sessions (for example planning mode, or a host that blocks writing files or running code): the researcher, librarian and red-team only read, so they can still run. The quant writes and runs code, so don't launch it. Do its calculations by hand instead, with every step shown, and tell the user in one line that the numbers weren't checked in code. Offer to rerun them through the quant once code can run.
+This plugin includes five subagents. Use them only in full mode, for large, hard-to-undo or safety-related decisions. Never call them in quick mode, or for clear or chaotic situations. Launch each one with the model its tier sets (see Model routing). If subagents can't be launched in this environment, do the same work yourself and say so in one line.
+- Read-only sessions (for example planning mode, or a host that blocks writing files or running code): the researcher, librarian and red-team only read, so they can still run. The quant and the analyst write and run code, so don't launch them. Do its calculations by hand instead, with every step shown, and tell the user in one line that the numbers weren't checked in code. Offer to rerun them through the quant once code can run.
 - `researcher`: launch it in the background as soon as the problem card is confirmed, while the conversation continues. Brief: the problem card, the 2-4 key quantities or probabilities that need outside data, and the region/industry. Use what it returns as P_outside in the Audit blend, and cite its sources.
 - `quant`: launch it after Recombine. Brief: the options, each outcome with its probability, costs as low/likely/high, timing of costs, the discount rate r, and the hard limits. Use its expected costs, risk of exceeding thresholds, and flip points in place of your own hand calculations. If its numbers differ from yours, use its numbers and say what changed.
+- `analyst`: launch it in the signal check (Stage 0b), as `references/signal-check.md` describes.
 - `red-team`: launch it in Stage 4b. Brief: the problem card, hard limits, options with numbers, key assumptions and the pre-mortem, without your reasoning or your preferred option.
 Write each brief so it stands alone: the subagent sees nothing of this conversation. Merge what comes back into a short summary for the user, keeping the ~4-items-in-focus rule.
 - `librarian`: launch it in full mode right after the problem card is confirmed, alongside the researcher. Brief: the problem card, 3-6 keywords and tags, and the journal script path (below). Use what it returns (similar past decisions, lessons, the user's calibration and cost bias) in the Audit and in Recombine.
@@ -64,7 +65,7 @@ The plugin keeps long-term memory in a journal file through the script `scripts/
 - Use the user's calibration: if `stats` shows a consistent bias (for example costs run 25% over, or probabilities are overconfident), apply it to the new estimates, show the adjustment, and say it comes from their own record.
 - If writing is blocked (a read-only or planning mode), reading commands (`due`, `find`, `stats`, `get`) still work. For `add` or `update`, draft the exact JSON record, show it to the user, and save it as soon as writing is allowed. Never silently drop a record.
 - Save base rates: when the researcher returns a well-sourced figure likely to be reused, save it with `add` as `{"kind":"base_rate","title":...,"value":...,"source":...,"tags":[...]}`.
-- At the close, in full mode and in quick mode when the user made a real choice: save the decision with `add`. Fields: `title`, `problem_card`, `system_type`, `stakes`, `options` (name and likely expected cost each), `chosen`, `expected_cost` (a number, likely value), `cost_range`, `key_assumption`, `predictions` (a list of `{"claim", "p"}` with 1-3 checkable predictions, such as "the pilot detects 8 of 10 past events"), `premortem_top_risk`, `warning_signal`, `red_team_verdict`, `review_date` (YYYY-MM-DD), `reaudit_triggers`, `tags`. Tell the user it was saved and when the review is due.
+- At the close, in full mode and in quick mode when the user made a real choice: save the decision with `add`. Fields: `title`, `problem_card`, `system_type`, `stakes`, `options` (name and likely expected cost each), `chosen`, `expected_cost` (a number, likely value), `cost_range`, `key_assumption`, `predictions` (a list of `{"claim", "p"}` with 1-3 checkable predictions, such as "the pilot detects 8 of 10 past events"), `premortem_top_risk`, `warning_signal`, `red_team_verdict`, `review_date` (YYYY-MM-DD), `reaudit_triggers`, `tags`, and `signals` if a signal check ran (patterns, grades and the data source, never raw data). Tell the user it was saved and when the review is due.
 - If the script can't run here (no shell or file access, for example in a chat app), say in one line that memory isn't available in this environment, and give the record as a short block the user can keep.
 - Never store passwords, personal identifiers of other people, or anything the user asks to keep out of the journal.
 
@@ -119,6 +120,9 @@ Classify the situation by how cause and effect relate. Give the evidence and a c
 - Mixed: if parts of the problem are different types, sort each part separately.
 - Re-sort: state what would move the situation into another type (for example stuck pipe becoming a kick makes it chaotic). Check again at each stage, and switch the mode if conditions change.
 - Where first principles fits: it is strongest where physics, money or hard data set the limits. In parts of the problem driven by people, politics or taste, use first principles only for the hard constraints, and lean on small experiments for the rest.
+
+## Stage 0b - Signal check (only when the user brings data)
+If the user uploads, pastes or mentions data (spreadsheets, documents, PDFs, logs, notes, a table of numbers), offer in one line to check it for real patterns before Decompose. Don't run it unasked, and never in a chaotic situation. If the user already asked you to find patterns, drivers or signals in the data, that is a yes: start the check in this reply. When they agree, read `references/signal-check.md` in this skill's base directory and follow it. Until a test from it has run, any pattern you mention is "eyeballed, not tested": never call it real, significant, confirmed or "what the data shows", and never treat it as the cause.
 
 ## Stage 1 - Decompose
 Decomposition only: no solutions, no evaluation. Build a hierarchy: problem > components > elements. Use the relevant dimensions (people, process steps, time, resources, data). Always include a cost branch, split into short-term and long-term costs. Stop when breaking things down further wouldn't help understanding.

@@ -1,6 +1,6 @@
 # thinking-coach evals
 
-18 single-turn test cases for the `thinking-coach` skill. Each case targets one rule in `SKILL.md` (false premise, out-of-reach goal, chaotic emergency, prompt injection, unsourced base rates, safety hard limits, journal review, and so on) and lists its pass criteria. Cases 15–18 are reworded holdouts, so a fix can be checked on prompts it wasn't written for.
+21 single-turn test cases for the `thinking-coach` skill. Each case targets one rule in `SKILL.md` (false premise, out-of-reach goal, chaotic emergency, prompt injection, unsourced base rates, safety hard limits, journal review, and so on) and lists its pass criteria. Cases 15–18 are reworded holdouts, so a fix can be checked on prompts it wasn't written for. Cases 19–21 cover the signal check with data pasted into the prompt: offering the check, too little data, and pure noise (the data in case 21 is random, and `signal_tests.py scan` finds no pair below p < 0.05).
 
 ## Run
 
@@ -28,4 +28,4 @@ Open each `<EVAL_OUT>/<case>.json`. Check `result` against the case's `pass` lis
 
 ## Not covered
 
-Multi-turn behavior (analysis paralysis, a declined journal command, stage-by-stage flow, "run it all") and subagent use.
+Multi-turn behavior (analysis paralysis, a declined journal command, stage-by-stage flow, "run it all"), subagent use, and uploaded files. The signal check's later steps (power check, tests, grading) and the `analyst` agent aren't reached in a single turn. Test the scripts directly instead.
