@@ -7,5 +7,9 @@
   "ink-drop.html": [
     "ink drop",
     "diffusion"
+  ],
+  "heating-loop.html": [
+    "central-heating loop",
+    "heating loop"
   ]
 }

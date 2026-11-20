@@ -23,7 +23,8 @@ Sources on blocked domains (Wikipedia, forums, video, blogs) never verify.
 The question file is read only to count what-ifs that rest on unverified
 facts; questions are never printed.
 
-Usage: python verify.py <analogy-runs dir> <slug>
+Usage: python verify.py <analogy-runs dir> <slug> [--all]
+(by default only facts not yet verified are sent; --all re-checks every cited fact)
 """
 import json
 import os
@@ -183,6 +184,11 @@ def main():
     cited = {fid for x in r.get("rules", []) for fid in x.get("fact_ids", [])}
     cited |= {fid for q in qs for fid in q.get("fact_ids", [])}
     todo = [facts[k] for k in sorted(cited, key=lambda s: int(re.sub(r"\D", "", s) or 0)) if k in facts]
+    if "--all" not in sys.argv:  # re-check only what is not yet verified (no flip-flopping, cheaper)
+        todo = [f for f in todo if f.get("verified") is not True]
+    if not todo:
+        print(json.dumps({"ok": True, "checked": 0, "note": "all cited facts already verified"}))
+        return
 
     concept = r.get("concept") or slug
     claims = "\n".join(f'{f["id"]}: {f["claim"]}' for f in todo)
@@ -207,7 +213,7 @@ def main():
         elif not ok:
             unverified.append(f["id"])
 
-    bad = {f["id"] for f in todo if not f["verified"]}
+    bad = {f["id"] for f in facts.values() if f["id"] in cited and not f.get("verified")}
     weak_rules = [x["id"] for x in r.get("rules", []) if bad & set(x.get("fact_ids", []))]
     weak_qs = sum(1 for q in qs if bad & set(q.get("fact_ids", [])))
     r["fetches"] = f"1 call ({provider})"

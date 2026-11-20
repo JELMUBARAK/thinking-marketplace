@@ -87,11 +87,13 @@ def machine_block(c, rules, show_heading, rough):
     drawing = find_drawing(c.get("machine"))
     if drawing:
         out.append(f'<div class="drawing">{drawing}</div>')
-    out.append(f"<h1>Think of it as {esc(lower_first(c.get('machine')))}</h1>")
     sents = []
     if c.get("analogy"):
         story = re.split(r"\s*where this breaks:", c["analogy"], flags=re.I)[0]
         sents = re.split(r"(?<=[.!?])\s+(?=[A-Z(])", RULE_TAG.sub("", story).strip())
+        name = lower_first(c.get("machine"))
+        if name.split(" ", 1)[-1].lower() not in sents[0].lower():  # skip a heading that the line repeats
+            out.append(f"<h1>Think of it as {esc(name)}</h1>")
         out.append(f'<p class="line">{esc(sents[0])}</p>')
     if breaks and rough:
         out.append(breaks_box(breaks))

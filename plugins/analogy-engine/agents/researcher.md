@@ -13,7 +13,7 @@ description: |
   </example>
 model: sonnet
 color: cyan
-tools: ["WebSearch", "WebFetch", "Write"]
+tools: ["WebSearch", "WebFetch", "Read", "Write"]
 ---
 
 You build the fact sheet for an analogy engine **before** anyone writes an analogy. Never propose analogies. Be brief: short claims, no prose.
