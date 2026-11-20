@@ -1,0 +1,57 @@
+<div id="ink">
+<canvas id="ink-c" width="640" height="420" style="width:100%;height:auto;display:block" role="img" aria-label="A drop of blue ink falls into a glass of still water and slowly spreads until the water is evenly blue"></canvas>
+<div style="display:flex;gap:8px;justify-content:center;margin-top:6px;font-size:14px">
+<button id="ink-again" type="button" style="font:inherit;padding:4px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer">Drop again</button>
+<button id="ink-warm" type="button" aria-pressed="false" style="font:inherit;padding:4px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer">Warm water</button>
+</div>
+</div>
+<script>
+(function(){
+ var c=document.getElementById('ink-c'),x=c.getContext('2d'),W=c.width,H=c.height;
+ var N=2200,px=new Float32Array(N),py=new Float32Array(N),warm=false,t=0,raf=null;
+ // glass: trapezoid, water fills it below WY
+ var TOPL=170,TOPR=470,BOTL=200,BOTR=440,TOP=40,BOT=395,WY=80,DROPX=320;
+ function edges(y){var f=(y-TOP)/(BOT-TOP);return [TOPL+(BOTL-TOPL)*f+6,TOPR+(BOTR-TOPR)*f-6];}
+ function css(n,d){var v=getComputedStyle(c).getPropertyValue(n).trim();return v||d;}
+ function gauss(){return (Math.random()+Math.random()+Math.random()+Math.random()-2)*1.22;}
+ function reset(){t=0;for(var i=0;i<N;i++){px[i]=DROPX+gauss()*4;py[i]=WY+14+gauss()*4;}}
+ function glass(line){
+  x.strokeStyle=line;x.lineWidth=3;x.lineJoin='round';
+  x.beginPath();x.moveTo(TOPL,TOP);x.lineTo(BOTL,BOT);x.lineTo(BOTR,BOT);x.lineTo(TOPR,TOP);x.stroke();
+ }
+ function frame(){
+  var dark=matchMedia('(prefers-color-scheme: dark)').matches;
+  var bg=css('--card',dark?'#262624':'#fff'),line=css('--muted','#888');
+  x.fillStyle=bg;x.fillRect(0,0,W,H);
+  // water
+  var e0=edges(WY),e1=edges(BOT);
+  x.fillStyle=dark?'rgba(120,170,220,.10)':'rgba(120,170,220,.16)';
+  x.beginPath();x.moveTo(e0[0]-6,WY);x.lineTo(e1[0]-6,BOT);x.lineTo(e1[1]+6,BOT);x.lineTo(e0[1]+6,WY);x.fill();
+  x.strokeStyle=dark?'rgba(150,190,230,.5)':'rgba(90,140,200,.5)';x.lineWidth=1.5;
+  x.beginPath();x.moveTo(e0[0]-6,WY);x.lineTo(e0[1]+6,WY);x.stroke();
+  var fall=36; // frames for the falling drop
+  if(t<fall){
+   var y=10+(WY+14-10)*(t/fall)*(t/fall);
+   x.fillStyle='#1f4fd6';x.beginPath();x.ellipse(DROPX,y,7,9,0,0,7);x.fill();
+  }else{
+   var s=warm?4.6:3.0; // random step size: warmer water jiggles harder
+   for(var i=0;i<N;i++){
+    var nx=px[i]+gauss()*s,ny=py[i]+gauss()*s;
+    if(ny<WY+2)ny=2*(WY+2)-ny; if(ny>BOT-3)ny=2*(BOT-3)-ny;
+    var ed=edges(ny); if(nx<ed[0])nx=2*ed[0]-nx; if(nx>ed[1])nx=2*ed[1]-nx;
+    px[i]=nx;py[i]=ny;
+   }
+   x.fillStyle=dark?'rgba(110,150,255,.10)':'rgba(25,70,210,.075)';
+   for(var j=0;j<N;j++){x.beginPath();x.arc(px[j],py[j],5,0,6.283);x.fill();}
+  }
+  glass(line);
+  x.fillStyle=line;x.font='13px system-ui,sans-serif';x.textAlign='right';
+  x.fillText('sped up: in perfectly still water this takes days',W-12,H-8);
+  t++;raf=requestAnimationFrame(frame);
+ }
+ document.getElementById('ink-again').onclick=reset;
+ var wb=document.getElementById('ink-warm');
+ wb.onclick=function(){warm=!warm;wb.setAttribute('aria-pressed',warm);wb.textContent=warm?'Cold water':'Warm water';reset();};
+ reset();frame();
+})();
+</script>

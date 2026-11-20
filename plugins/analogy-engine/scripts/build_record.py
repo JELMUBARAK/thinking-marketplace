@@ -14,7 +14,9 @@ Usage: python build_record.py <analogy-runs dir> <slug>
   "gate": {"sense": "", "type": "physical|formal|social-normative", "visible": false,
            "dispute_kind": "none|evidence|values|layered", "safety_topic": false,
            "prerequisites": [], "assumptions": []},
-  "route": "analogy|values|contested|simulate_first",
+  "route": "analogy|values|contested|simulate_first|direct_simulation",
+  "simulation": {"drawing": "ink-drop.html", "caption": "one plain line under it", "rule_ids": ["R1"]},
+                 (direct_simulation only: candidates and test_counts may be empty)
   "candidates": [
     {"id": "C1", "machine": "", "definition": null, "analogy": "",
      "mapping": [{"rule": "R1", "source": "what the machine does, or null for a break",
@@ -75,9 +77,21 @@ def main():
     if len(rules) > 11:
         warnings.append(f"{len(rules)} rules, limit is 11")
 
-    for k in ("input", "gate", "route", "candidates", "test_counts"):
+    direct = a.get("route") == "direct_simulation"
+    need = ("input", "gate", "route", "simulation") if direct else ("input", "gate", "route", "candidates", "test_counts")
+    for k in need:
         if k not in a:
             problems.append(f"missing '{k}'")
+    if direct:
+        sim = a.get("simulation") or {}
+        if not sim.get("drawing") or not sim.get("caption"):
+            problems.append("simulation needs 'drawing' and 'caption'")
+        for rid in sim.get("rule_ids") or []:
+            for fid in rules.get(rid, {}).get("fact_ids", []):
+                if fid not in verified:
+                    problems.append(f"simulation shows {rid}, which rests on unverified fact {fid}")
+        a.setdefault("candidates", [])
+        a.setdefault("test_counts", {})
     cands = a.get("candidates") or []
     if not isinstance(cands, list):
         problems.append("'candidates' must be a list")
@@ -112,7 +126,7 @@ def main():
                 problems.append(f"{cid}: rule {rid} has no row (map it, or add a row with source null and a break line)")
         for key in ("practice_counts", "test_counts"):
             counts = (a.get(key) or {}).get(cid)
-            if key == "test_counts" and counts is None:
+            if key == "test_counts" and counts is None and not direct:
                 problems.append(f"{cid}: no test counts")
             if counts:
                 for v in VERDICTS:
@@ -125,11 +139,15 @@ def main():
     # Result, worked out from the test counts per the rubric.
     verdicts = {}
     for c in cands:
-        tc = a["test_counts"][c["id"]]
+        tc = a["test_counts"].get(c["id"])
+        if tc is None:
+            continue
         total = sum(tc.get(v, 0) for v in VERDICTS)
         verdicts[c["id"]] = {"outcome": decide(tc, total), "match": tc["match"], "of": total}
     route = a["route"]
-    if route in ("values", "contested") or len(cands) > 1:
+    if direct:
+        outcome, picked, shown, label = "direct_simulation", None, [], None
+    elif route in ("values", "contested") or len(cands) > 1:
         outcome = "side_by_side"
         picked = None
         shown = [c["id"] for c in cands]
@@ -150,7 +168,7 @@ def main():
               for c in cands for row in c.get("mapping", []) if row.get("source") is None or row.get("break")]
 
     rec = {
-        "schema_version": "0.5",
+        "schema_version": "0.6",
         "created": datetime.date.today().isoformat(),
         "input": a["input"],
         "gate": a["gate"],
@@ -163,6 +181,7 @@ def main():
         "neighbours": r.get("neighbours", []),
         "whatifs": test,
         "route": route,
+        "simulation": a.get("simulation"),
         "candidates": cands,
         "practice_counts": a.get("practice_counts", {}),
         "practice_fixes": a.get("practice_fixes", []),

@@ -14,10 +14,14 @@ References in `../../references/` (relative to this skill's base directory): `ma
 
 ## 1. Gate (no tools)
 - Reuse `analogy-runs/<slug>.research.json` if it exists for the same sense.
-- Sense (state the assumption), type (physical / formal / social-normative), safety topic, visible? (a human-scale thing -> simulate it directly, no analogy).
+- Sense (state the assumption), type (physical / formal / social-normative), safety topic, visible?
+- **Visible** = could you film the effect with a phone, at human scale, without instruments? (ink spreading in water, a pendulum, a kettle boiling: yes. A cell, an atom, a p-value: no.) If yes, route `direct_simulation`: show the real thing, no machine, no scorer calls (see section 3b).
 
-## 2. Research (agent call 1: `researcher`)
-Brief: concept, sense, type, safety flag, slug. It writes:
+## 2. Research (agent call 1: `researcher`, then `verify.py`)
+**Fast path (default when `PERPLEXITY_API_KEY` or `GEMINI_API_KEY` is set):** brief the researcher with `Mode: draft` (no web tools; it drafts from knowledge in about 30 s). Then run `python -I <plugin>/scripts/verify.py analogy-runs <slug>`: one search-API call checks every cited fact and writes `verified`/`url` back. It prints counts only. If it lists `contradicted` facts or `rules_on_unverified_facts`, send those ids and corrections to the same researcher once (SendMessage) to fix facts, rules and what-ifs; that is not a new agent call. If it exits with `fallback: true` (no key, or the API failed), brief the researcher with `Mode: web` instead.
+**Web mode:** the researcher verifies with its own search and up to 8 page fetches (slow: about 2.5 minutes).
+
+Brief: concept, sense, type, safety flag, slug, mode. It writes:
 - `analogy-runs/<slug>.research.json`: checked facts, the **rule table** (5-11 rules, each citing verified facts), misconceptions, status, definitions if the meaning itself is disputed.
 - `analogy-runs/<slug>.questions.json`: 16 hidden what-ifs. **Never open it.**
 
@@ -25,9 +29,13 @@ Then split them at random (no agent): `python -I <plugin>/scripts/split.py analo
 
 Route: meaning disputed (values) -> one machine per definition, shown side by side, none picked. Contested at the layer explained -> one per model. Formal with a runnable rule -> write a simulation spec first; the analogy supports it.
 
+## 3b. Direct simulation (visible concepts, instead of 3-5)
+Show the real thing, not a machine. Look in `<plugin>/drawings/index.json` for a simulation of it; if none exists, write one into `drawings/` (one HTML fragment: a canvas or SVG plus a small script, two buttons at most, theme colours from the card's CSS variables) and add it to the index. It must behave by the verified rules only (for example random steps, not steering); label any speed-up honestly. Write `"route": "direct_simulation"` and `"simulation": {"drawing": "<file>", "caption": "That is <concept>: <one plain sentence>", "rule_ids": [the rules the simulation shows]}` in `.analogy.json`, with empty `candidates` and `test_counts`. No practice or test run: the simulation is the real thing, so the cost is the researcher plus `verify.py`. Then go to step 7.
+
 ## 3. Match (you, no agent)
 1. Read `machines.md`. Pick the machine whose rules cover the most of the concept's rules. Never pick an object listed as teaching a misconception.
-2. Write the analogy: the machine described in plain sentences, one sentence per rule, using only behaviour the everyday machine really has.
+2. Write the analogy: the machine described in plain sentences, one sentence per rule, using only behaviour the everyday machine really has. **The first sentence is the one the learner sees on the card**, so it must carry the whole idea on its own; the rest sits behind a "More" toggle.
+   If the machine has no drawing in `drawings/index.json`, write one (as in 3b) and index it, so the card leads with a picture.
 3. Mapping table: one row per concept rule: `{rule, source, target, plain, fact_ids}` (`plain`: the target in everyday words for a learner). A rule the machine can't do gets a row with `source: null` and a plain break line ("Where this breaks: ...").
 4. If no machine covers at least two thirds of the rules, add a machine to `machines.md` (with its real rules) or route to simulation. Don't stretch a machine.
 
@@ -46,7 +54,7 @@ Same brief with the test file path and output `analogy-runs/<slug>.test-scores.j
 - Values / contested: show each definition's machine side by side, labelled and attributed. If they don't all pass, show them all as text only, so presentation favours none.
 
 ## 7. Output
-Write only your own part to `analogy-runs/<slug>.analogy.json`, in the layout at the top of `scripts/build_record.py`: input, gate, route, candidates (each with `id`, `machine`, `definition`, `analogy`, and `mapping` rows `{rule: "R3", source, target, plain, fact_ids, break}`; a break row has `source: null`; `plain` says the target in everyday words a newcomer understands, under 15 words, no jargon), practice and test counts per candidate id, practice fixes, the split seed and warnings, and agent calls. Then run `python -I <plugin>/scripts/build_record.py analogy-runs <slug>`. It adds the facts, rules and test what-ifs, works out the result from the test counts, and writes `<slug>.json`. If it prints problems, fix them in your `.analogy.json` and run it again; don't write `<slug>.json` yourself. Then run `python -I <plugin>/scripts/render_card.py analogy-runs <slug>`, which writes the learner card `<slug>.card.html` (no scores on it; it embeds the machine's drawing from `drawings/` if one exists). Mention the card's path in your reply. Reply in plain words: the analogy, the rule-by-rule table, where it breaks, and the test score with the script's outcome.
+Write only your own part to `analogy-runs/<slug>.analogy.json`, in the layout at the top of `scripts/build_record.py`: input, gate, route, candidates (each with `id`, `machine`, `definition`, `analogy`, and `mapping` rows `{rule: "R3", source, target, plain, fact_ids, break}`; a break row has `source: null`; `plain` says the target in everyday words a newcomer understands, under 15 words, no jargon), practice and test counts per candidate id, practice fixes, the split seed and warnings, and agent calls. Then run `python -I <plugin>/scripts/build_record.py analogy-runs <slug>`. It adds the facts, rules and test what-ifs, works out the result from the test counts, and writes `<slug>.json`. If it prints problems, fix them in your `.analogy.json` and run it again; don't write `<slug>.json` yourself. Then run `python -I <plugin>/scripts/render_card.py analogy-runs <slug>`, which writes the learner card `<slug>.card.html`: the drawing or simulation, one line under it, and everything else behind "More" (no scores). Mention the card's path in your reply. **Keep the reply short:** the one-line picture, the result, and only the breaks or problems worth knowing; no full rule table unless asked.
 
 ## Rules
 - Only verified facts make rules, and only rules make mappings.

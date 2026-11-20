@@ -20,6 +20,10 @@ You build the fact sheet for an analogy engine **before** anyone writes an analo
 
 **Brief** (in the prompt): concept, sense, type (physical / formal / social-normative), safety flag.
 
+**Mode** (in the brief):
+- `draft`: do NOT use WebSearch or WebFetch. Do step 1 only, mark every fact `verified: false`, `tier: null`, `url: ""`, put `"concept"` in the research file, and write both files. `scripts/verify.py` checks the facts afterwards with one search-API call. If you are later sent corrections for some fact ids, fix those facts, every rule and what-if that cites them, and rewrite both files.
+- `web` (default if no mode is given): do steps 1 and 2 as below.
+
 ## Steps
 1. **Draft from knowledge** (no tools yet): 8-12 single-sentence facts `F1..`, each with `layer` (definition / observation / model / interpretation). Then from those facts:
    - `rules` `R1..` (5-11): plain one-line rules of how the concept behaves ("when X rises past Y, Z happens"; "nothing pushes it, it is counting"; "the effect arrives later"), each citing fact ids. **Every verified fact (except interpretation-layer ones) must be cited by at least one rule**, so no question can land where no rule exists. Cover: what it is and isn't, what changes it, thresholds, what drives it (or that nothing does), what limits it. For a values dispute, tag rules that belong to one definition with `definition`.
