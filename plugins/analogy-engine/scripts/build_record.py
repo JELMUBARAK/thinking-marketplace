@@ -18,7 +18,8 @@ Usage: python build_record.py <analogy-runs dir> <slug>
   "candidates": [
     {"id": "C1", "machine": "", "definition": null, "analogy": "",
      "mapping": [{"rule": "R1", "source": "what the machine does, or null for a break",
-                  "target": "", "fact_ids": ["F1"], "break": null}]}
+                  "target": "", "plain": "the target in plain words for a learner",
+                  "fact_ids": ["F1"], "break": null}]}
   ],
   "practice_counts": {"C1": {"match": 0, "miss": 0, "gap": 0, "flip": 0, "told": 0, "disqualified": false}},
   "practice_fixes": ["R3: what changed"],

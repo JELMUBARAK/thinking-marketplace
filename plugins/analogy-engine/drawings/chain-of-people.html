@@ -1,0 +1,38 @@
+<div id="cop">
+<svg id="cop-svg" width="100%" viewBox="0 0 640 150" role="img" aria-label="A line of clerks passing a smaller job along and answers coming back">
+<defs><marker id="cop-ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round"/></marker></defs>
+<g id="cop-g"></g></svg>
+<div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)">
+<label for="cop-n" style="white-space:nowrap">Size of the job</label>
+<input type="range" id="cop-n" min="1" max="7" step="1" value="4" style="flex:1">
+<strong id="cop-out" style="color:var(--text);min-width:18px">4</strong></div>
+<p id="cop-read" style="font-size:13px;color:var(--muted);margin:4px 0 0"></p>
+</div>
+<script>
+(function(){
+ var DESKS=5,g=document.getElementById('cop-g'),s=document.getElementById('cop-n');
+ function box(x,w,fill,line,txt,t1,t2){return '<rect x="'+x+'" y="34" width="'+w+'" height="54" rx="6" fill="var('+fill+')" stroke="var('+line+')" stroke-width="1"/>'+
+  '<text x="'+(x+w/2)+'" y="56" text-anchor="middle" font-size="14" font-weight="600" fill="var('+txt+')">'+t1+'</text>'+
+  '<text x="'+(x+w/2)+'" y="76" text-anchor="middle" font-size="12" fill="var('+txt+')">'+t2+'</text>';}
+ function draw(){
+  var n=+s.value,shown=Math.min(n,DESKS+1),step=640/6,w=step-26,h='';
+  document.getElementById('cop-out').textContent=n;
+  for(var i=0;i<shown;i++){
+   var k=n-i,x=4+i*step,over=i>=DESKS,base=k===1;
+   h+=over?box(x,w,'--bad','--bad-line','--bad-text','No desk','called off')
+     :base?box(x,w,'--base','--base-line','--base-text','Size 1','answers now')
+     :box(x,w,'--node','--node-line','--node-text','Size '+k,'waits');
+   if(i<shown-1){h+='<line x1="'+(x+w+2)+'" y1="50" x2="'+(x+step-4)+'" y2="50" stroke="var(--muted)" stroke-width="1" marker-end="url(#cop-ar)"/>';
+    if(!over&&i+1<DESKS)h+='<line x1="'+(x+step-4)+'" y1="74" x2="'+(x+w+2)+'" y2="74" stroke="var(--back)" stroke-width="1" marker-end="url(#cop-ar)"/>';}
+  }
+  h+='<text x="4" y="20" font-size="12" fill="var(--muted)">Smaller job passed right</text>'+
+     '<text x="636" y="20" text-anchor="end" font-size="12" fill="var(--back)">Answers come back left</text>'+
+     '<text x="4" y="118" font-size="12" fill="var(--muted)">Desks in the office: '+DESKS+'</text>';
+  g.innerHTML=h;
+  document.getElementById('cop-read').textContent=n>DESKS
+   ?'The job needs '+n+' clerks but there are only '+DESKS+' desks, so the office calls it off.'
+   :n+' clerks each keep their own notepad; the answer travels back up the line, last clerk first.';
+ }
+ s.addEventListener('input',draw);draw();
+})();
+</script>

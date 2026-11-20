@@ -16,7 +16,9 @@ claude plugin install analogy-engine@thinking-tools
 /analogy-engine:transform inflation sense: consumer prices
 ```
 
-Files go to `analogy-runs/` in the folder you started Claude in. About 3 agent calls and $0.80 per concept.
+Files go to `analogy-runs/` in the folder you started Claude in. Open `<concept>.card.html` for the learner card: the analogy, how it lines up, and where it breaks, with no scores. To redraw a card from a record: `python scripts/render_card.py <folder> <concept>`.
+
+Machines with an interactive drawing are listed in `drawings/index.json` (so far: chain of people). Add a drawing as an HTML fragment in `drawings/` and list the machine-name fragments it serves. About 3 agent calls and $0.80 per concept.
 
 ## Eval runs (scores that count)
 

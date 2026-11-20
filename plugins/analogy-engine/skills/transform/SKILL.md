@@ -28,7 +28,7 @@ Route: meaning disputed (values) -> one machine per definition, shown side by si
 ## 3. Match (you, no agent)
 1. Read `machines.md`. Pick the machine whose rules cover the most of the concept's rules. Never pick an object listed as teaching a misconception.
 2. Write the analogy: the machine described in plain sentences, one sentence per rule, using only behaviour the everyday machine really has.
-3. Mapping table: one row per concept rule: `{rule, source, target, fact_ids}`. A rule the machine can't do gets a row with `source: null` and a plain break line ("Where this breaks: ...").
+3. Mapping table: one row per concept rule: `{rule, source, target, plain, fact_ids}` (`plain`: the target in everyday words for a learner). A rule the machine can't do gets a row with `source: null` and a plain break line ("Where this breaks: ...").
 4. If no machine covers at least two thirds of the rules, add a machine to `machines.md` (with its real rules) or route to simulation. Don't stretch a machine.
 
 ## 4. Practice run (agent call 2: `scorer` on the practice set)
@@ -46,7 +46,7 @@ Same brief with the test file path and output `analogy-runs/<slug>.test-scores.j
 - Values / contested: show each definition's machine side by side, labelled and attributed. If they don't all pass, show them all as text only, so presentation favours none.
 
 ## 7. Output
-Write only your own part to `analogy-runs/<slug>.analogy.json`, in the layout at the top of `scripts/build_record.py`: input, gate, route, candidates (each with `id`, `machine`, `definition`, `analogy`, and `mapping` rows `{rule: "R3", source, target, fact_ids, break}`; a break row has `source: null`), practice and test counts per candidate id, practice fixes, the split seed and warnings, and agent calls. Then run `python -I <plugin>/scripts/build_record.py analogy-runs <slug>`. It adds the facts, rules and test what-ifs, works out the result from the test counts, and writes `<slug>.json`. If it prints problems, fix them in your `.analogy.json` and run it again; don't write `<slug>.json` yourself. Reply in plain words: the analogy, the rule-by-rule table, where it breaks, and the test score with the script's outcome.
+Write only your own part to `analogy-runs/<slug>.analogy.json`, in the layout at the top of `scripts/build_record.py`: input, gate, route, candidates (each with `id`, `machine`, `definition`, `analogy`, and `mapping` rows `{rule: "R3", source, target, plain, fact_ids, break}`; a break row has `source: null`; `plain` says the target in everyday words a newcomer understands, under 15 words, no jargon), practice and test counts per candidate id, practice fixes, the split seed and warnings, and agent calls. Then run `python -I <plugin>/scripts/build_record.py analogy-runs <slug>`. It adds the facts, rules and test what-ifs, works out the result from the test counts, and writes `<slug>.json`. If it prints problems, fix them in your `.analogy.json` and run it again; don't write `<slug>.json` yourself. Then run `python -I <plugin>/scripts/render_card.py analogy-runs <slug>`, which writes the learner card `<slug>.card.html` (no scores on it; it embeds the machine's drawing from `drawings/` if one exists). Mention the card's path in your reply. Reply in plain words: the analogy, the rule-by-rule table, where it breaks, and the test score with the script's outcome.
 
 ## Rules
 - Only verified facts make rules, and only rules make mappings.
