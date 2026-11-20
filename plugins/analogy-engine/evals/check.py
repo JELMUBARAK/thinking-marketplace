@@ -92,7 +92,9 @@ def check(path):
     if rids:
         for cand in byid.values():
             mapped = {r.get("rule") for _, r in rows(cand)}
-            for rid in sorted(rids - mapped):
+            own = cand.get("definition")
+            other = {x["id"] for x in rec.get("rules", []) if own and x.get("definition") and x.get("definition") != own}
+            for rid in sorted(rids - mapped - other):
                 problems.append(f"{cand.get('id')}: rule {rid} has no row (map it or state it as a break)")
 
     calls = (rec.get("trace") or {}).get("agent_calls")

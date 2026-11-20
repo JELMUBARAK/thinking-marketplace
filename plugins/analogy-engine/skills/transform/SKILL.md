@@ -39,14 +39,14 @@ Fix every rule it names, once: rewrite that rule's sentence and row so the machi
 ## 5. Test run (agent call 3: `scorer` on the test set)
 Same brief with the test file path and output `analogy-runs/<slug>.test-scores.json`. No fixing after this: the test score is the result.
 
-## 6. Decide (on the test set only)
+## 6. Decide (on the test set only; `build_record.py` applies these rules)
 - **pass**: at least 7 of 8 match (`told` is not a match), no flip, no gap.
 - **rough model**: at least 5 of 8 and no flip; show the breaks.
 - Otherwise **simulation only** (formal concepts) or **reject**, with the partial matches and a "no everyday machine does X" line.
 - Values / contested: show each definition's machine side by side, labelled and attributed. If they don't all pass, show them all as text only, so presentation favours none.
 
 ## 7. Output
-Write `analogy-runs/<slug>.json` (see `output-schema.json`): gate, rule table, machine, analogy (after the practice fix), mapping, breaks, practice and test counts (match, miss, gap, flip, told), split seed, result, trace (agent calls). Reply in plain words: the analogy, the rule-by-rule table, where it breaks, the test score.
+Write only your own part to `analogy-runs/<slug>.analogy.json`, in the layout at the top of `scripts/build_record.py`: input, gate, route, candidates (each with `id`, `machine`, `definition`, `analogy`, and `mapping` rows `{rule: "R3", source, target, fact_ids, break}`; a break row has `source: null`), practice and test counts per candidate id, practice fixes, the split seed and warnings, and agent calls. Then run `python -I <plugin>/scripts/build_record.py analogy-runs <slug>`. It adds the facts, rules and test what-ifs, works out the result from the test counts, and writes `<slug>.json`. If it prints problems, fix them in your `.analogy.json` and run it again; don't write `<slug>.json` yourself. Reply in plain words: the analogy, the rule-by-rule table, where it breaks, and the test score with the script's outcome.
 
 ## Rules
 - Only verified facts make rules, and only rules make mappings.
