@@ -19,7 +19,9 @@ References in `../../references/` (relative to this skill's base directory): `ma
 ## 2. Research (agent call 1: `researcher`)
 Brief: concept, sense, type, safety flag, slug. It writes:
 - `analogy-runs/<slug>.research.json`: checked facts, the **rule table** (5-11 rules, each citing verified facts), misconceptions, status, definitions if the meaning itself is disputed.
-- `analogy-runs/<slug>.practice.json` and `analogy-runs/<slug>.test.json`: 8 hidden what-ifs each. **Never open either file.** The practice set is for finding weak rules; the test set is the real exam and is never used for fixing.
+- `analogy-runs/<slug>.questions.json`: 16 hidden what-ifs. **Never open it.**
+
+Then split them at random (no agent): `python -I <plugin>/scripts/split.py analogy-runs <slug>`, where `<plugin>` is this skill's base directory two levels up. It writes `<slug>.practice.json` and `<slug>.test.json` (8 each, mixed alike by kind) and prints counts, the seed and any warnings only; record the seed and warnings in the trace (a warning means the question mix is off, so the test score is weaker evidence). **Never open the question files.** The practice set is for finding weak rules; the test set is the real exam and is never used for fixing.
 
 Route: meaning disputed (values) -> one machine per definition, shown side by side, none picked. Contested at the layer explained -> one per model. Formal with a runnable rule -> write a simulation spec first; the analogy supports it.
 
@@ -30,21 +32,21 @@ Route: meaning disputed (values) -> one machine per definition, shown side by si
 4. If no machine covers at least two thirds of the rules, add a machine to `machines.md` (with its real rules) or route to simulation. Don't stretch a machine.
 
 ## 4. Practice run (agent call 2: `scorer` on the practice set)
-Brief: concept, facts (id, claim, verified), misconceptions, the analogy and its rows, the scorer rules from `scoring-rubric.md`, and the practice file path (the scorer reads it). It writes its grid to `analogy-runs/<slug>.practice-scores.json` (don't open it) and replies with counts plus the **rule ids** behind any flip, miss or gap, never the questions.
+Brief: concept, facts (id, claim, verified), misconceptions, the analogy and its rows, the scorer rules from `scoring-rubric.md`, and the practice file path (the scorer reads it). It writes its grid to `analogy-runs/<slug>.practice-scores.json` (don't open it) and replies with counts plus the **rule ids** behind any flip, miss, gap or told, never the questions.
 
-Fix every rule it names, once: rewrite that rule's sentence and row, or mark it as a stated break. A failure marked "none" means the rule table is missing a rule; add one only if a verified fact supports it, otherwise note the gap.
+Fix every rule it names, once: rewrite that rule's sentence and row so the machine itself gives the answer, or mark it as a stated break. A break line says in one line what the machine gets wrong; answers that come only from a break line score `told`, which never counts as a match. A failure marked "none" means the rule table is missing a rule; add one only if a verified fact supports it, otherwise note the gap.
 
 ## 5. Test run (agent call 3: `scorer` on the test set)
 Same brief with the test file path and output `analogy-runs/<slug>.test-scores.json`. No fixing after this: the test score is the result.
 
 ## 6. Decide (on the test set only)
-- **pass**: at least 7 of 8, no flip, no gap.
+- **pass**: at least 7 of 8 match (`told` is not a match), no flip, no gap.
 - **rough model**: at least 5 of 8 and no flip; show the breaks.
 - Otherwise **simulation only** (formal concepts) or **reject**, with the partial matches and a "no everyday machine does X" line.
 - Values / contested: show each definition's machine side by side, labelled and attributed. If they don't all pass, show them all as text only, so presentation favours none.
 
 ## 7. Output
-Write `analogy-runs/<slug>.json` (see `output-schema.json`): gate, rule table, machine, analogy (after the practice fix), mapping, breaks, practice and test counts, result, trace (agent calls). Reply in plain words: the analogy, the rule-by-rule table, where it breaks, the test score.
+Write `analogy-runs/<slug>.json` (see `output-schema.json`): gate, rule table, machine, analogy (after the practice fix), mapping, breaks, practice and test counts (match, miss, gap, flip, told), split seed, result, trace (agent calls). Reply in plain words: the analogy, the rule-by-rule table, where it breaks, the test score.
 
 ## Rules
 - Only verified facts make rules, and only rules make mappings.
