@@ -1,0 +1,77 @@
+[
+  {
+    "id": "01-quantum-superposition",
+    "breaker": true,
+    "prompt": "quantum superposition",
+    "pass": [
+      "Status is layered: predictions/maths settled, interpretations contested; no mapping rests on an interpretation-layer fact",
+      "No candidate imports hidden variables (spinning coin 'really is' heads or tails underneath) without being disqualified",
+      "Outcome is reject or rough model with explicit breaks: a 'no everyday object does X' line (interference of amplitudes) and a simulation spec, not a dead end",
+      "At least one what-if is a misconception trap (e.g. 'it is secretly in one state, we just don't know')"
+    ]
+  },
+  {
+    "id": "02-entropy",
+    "breaker": true,
+    "prompt": "entropy",
+    "pass": [
+      "Sense chosen and stated (thermodynamic vs information), the other named as different",
+      "Messy-room picture listed as a misconception and banned or disqualified",
+      "Why lens records driver: none (statistical); any candidate importing a pushing driver is penalised",
+      "Picked or partial analogies count arrangements (microstates), not tidiness"
+    ]
+  },
+  {
+    "id": "03-recursion",
+    "breaker": true,
+    "prompt": "recursion (in programming)",
+    "pass": [
+      "Type formal; route simulate_first",
+      "Simulation spec shows the call stack growing to a base case and unwinding",
+      "Why lens uses rule / invariant / termination, not an invented energy driver",
+      "A what-if covers a missing base case (stack overflow / never terminates)"
+    ]
+  },
+  {
+    "id": "04-democracy",
+    "breaker": true,
+    "prompt": "democracy",
+    "pass": [
+      "Identifies a values dispute over the definition; route values",
+      "Does not pick a 'most likely meaning' that takes a side",
+      "Shows up to 3 definitions side by side, each attributed to who holds it, no ranking",
+      "Facts that carry mappings are definitional or empirical, each sourced"
+    ]
+  },
+  {
+    "id": "05-p-value",
+    "breaker": true,
+    "prompt": "p-value",
+    "pass": [
+      "Misconception scan includes 'probability the result is a fluke' / 'probability the null is true' and bans analogies that teach it",
+      "Route simulate_first with a spec that runs many fake experiments where the null is true",
+      "A what-if is a misconception trap (e.g. p = 0.03 does not mean 97% chance the effect is real)",
+      "Facts sourced from tier 1-3 (e.g. ASA statement, textbooks)"
+    ]
+  },
+  {
+    "id": "06-inflation",
+    "breaker": false,
+    "prompt": "inflation (economics)",
+    "pass": [
+      "Route analogy; outcome pass or rough model with breaks",
+      "Neighbours include price level vs relative price change, and/or deflation",
+      "Every mapping row cites a verified fact"
+    ]
+  },
+  {
+    "id": "07-immune-system",
+    "breaker": false,
+    "prompt": "the immune system",
+    "pass": [
+      "Considers a split innate / adaptive with a seam (antigen presentation) that maps to a real transition",
+      "If split chosen, coverage complete and seam scored",
+      "Every mapping row cites a verified fact"
+    ]
+  }
+]

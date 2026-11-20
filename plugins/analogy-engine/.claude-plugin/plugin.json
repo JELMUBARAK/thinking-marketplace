@@ -1,0 +1,13 @@
+{
+  "name": "analogy-engine",
+  "version": "0.4.0",
+  "description": "Test bench for a learning app's transformation engine: writes a concept's checked rules, matches them one by one to an everyday machine with known rules, states where it breaks, and tests it blind on hidden what-if questions.",
+  "keywords": [
+    "analogy",
+    "learning",
+    "explanation",
+    "mental-models",
+    "education"
+  ],
+  "license": "MIT"
+}

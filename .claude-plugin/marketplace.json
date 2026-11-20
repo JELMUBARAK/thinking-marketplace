@@ -1,11 +1,18 @@
 {
   "name": "thinking-tools",
-  "owner": { "name": "Thinking System" },
+  "owner": {
+    "name": "Thinking System"
+  },
   "plugins": [
     {
       "name": "thinking-system",
       "source": "./plugins/thinking-system",
       "description": "Structured thinking coach with framing, first-principles analysis, cost-based decisions, subagents and a decision journal."
+    },
+    {
+      "name": "analogy-engine",
+      "source": "./plugins/analogy-engine",
+      "description": "Turns abstract concepts into everyday-machine analogies by matching checked rules one by one, with stated breaks and a blind hidden-question test."
     }
   ]
 }
