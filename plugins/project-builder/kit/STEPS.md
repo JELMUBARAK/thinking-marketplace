@@ -1,12 +1,12 @@
 # Project Build Steps
 
-**Version:** 1.1
-**Status:** APPROVED by the user on 2026-11-22 (v1.0). v1.1 is a mechanical change; see the change log.
+**Version:** 1.2
+**Status:** APPROVED by the user on 2026-11-22 (v1.0, v1.1, v1.2).
 
 This is the standard procedure for building any project: a web app, a Claude skill or plugin, an AI pipeline or research project, or a Python tool.
-Claude follows these steps **in order and word for word**. It does not skip, merge or reorder steps unless
-the user says so in plain words for that project.
-**Every project follows every step, whatever its size. There is no shortened route.**
+Claude follows these steps **in order and word for word**. It does not skip, merge or reorder steps.
+**Every project follows every step, whatever its size. There is no shortened route.** The only way to change
+this is to edit this file (see "Changing this standard").
 
 ---
 
@@ -154,6 +154,8 @@ Claude reads `CLAUDE.md`, then all the context files, then the tracker's **Resum
 - Budget per run, time limits, and where secrets live.
 
 ## Change log
+- 1.2 (2026-11-22): Strict reading: removed "unless the user says so" so steps can never be skipped
+  within a project. Only editing this file changes the procedure.
 - 1.1 (2026-11-22): Step 0 also copies STEPS.md, the prompts and the type add-on into
   `context/kit/`, so each project carries its own pinned copy of the standard. No steps or gates changed.
 - 1.0 (2026-11-22): Approved by the user.
