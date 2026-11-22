@@ -1,7 +1,7 @@
 # Project Build Steps
 
-**Version:** 1.2
-**Status:** APPROVED by the user on 2026-11-22 (v1.0, v1.1, v1.2).
+**Version:** 1.3
+**Status:** APPROVED by the user on 2026-11-22 (v1.0–v1.3).
 
 This is the standard procedure for building any project: a web app, a Claude skill or plugin, an AI pipeline or research project, or a Python tool.
 Claude follows these steps **in order and word for word**. It does not skip, merge or reorder steps.
@@ -154,6 +154,7 @@ Claude reads `CLAUDE.md`, then all the context files, then the tracker's **Resum
 - Budget per run, time limits, and where secrets live.
 
 ## Change log
+- 1.3 (2026-11-22): python-tool add-on: install packages only into a project `.venv`, never globally.
 - 1.2 (2026-11-22): Strict reading: removed "unless the user says so" so steps can never be skipped
   within a project. Only editing this file changes the procedure.
 - 1.1 (2026-11-22): Step 0 also copies STEPS.md, the prompts and the type add-on into

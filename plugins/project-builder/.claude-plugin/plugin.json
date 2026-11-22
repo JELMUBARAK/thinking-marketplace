@@ -1,6 +1,6 @@
 {
   "name": "project-builder",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "A standard, gated way to build any project with an AI agent: an idea conversation, six context files, a build plan, then one spec-driven unit at a time. Covers web apps, Claude plugins, AI pipelines and Python tools. Based on the Six-File Context System.",
   "keywords": [
     "spec-driven",
