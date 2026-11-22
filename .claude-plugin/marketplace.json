@@ -13,6 +13,11 @@
       "name": "analogy-engine",
       "source": "./plugins/analogy-engine",
       "description": "Turns abstract concepts into everyday-machine analogies by matching checked rules one by one, with stated breaks and a blind hidden-question test."
+    },
+    {
+      "name": "project-builder",
+      "source": "./plugins/project-builder",
+      "description": "Gated, spec-driven project building: idea conversation, six context files, build plan, then one unit at a time. For web apps, Claude plugins, AI pipelines and Python tools."
     }
   ]
 }

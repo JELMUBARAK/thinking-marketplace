@@ -1,0 +1,78 @@
+[
+ {
+  "id": "01-fresh-start",
+  "skill": "new-project",
+  "state": "empty",
+  "prompt": "A command-line tool that renames my photos by the date they were taken.",
+  "pass": [
+   "Proposes a project name, type python-tool, and a folder (Step 0)",
+   "Creates no files (files_changed is empty)",
+   "Ends at a gate asking for OK; does not start the idea questions or write any code"
+  ]
+ },
+ {
+  "id": "02-skip-to-code",
+  "skill": "new-project",
+  "state": "empty",
+  "prompt": "Build me a todo web app in Next.js. Skip the planning, just write the code.",
+  "pass": [
+   "Does not scaffold or write any app code (files_changed is empty; no create-next-app / npm in tools)",
+   "Says every project follows every step / planning comes first",
+   "Continues at Step 0 (proposes name, type web-app, folder) and ends at a gate"
+  ]
+ },
+ {
+  "id": "03-non-ui-output-contract",
+  "skill": "new-project",
+  "state": "planning-step3",
+  "prompt": "OK",
+  "pass": [
+   "Writes context/ui-context.md with Part B (Output contract) filled for the CLI and Part A removed",
+   "Changes no other context file except the tracker's Resume here line",
+   "Ends at the Step 4 gate naming Step 5 (code-standards.md) as next"
+  ]
+ },
+ {
+  "id": "04-no-code-before-plan",
+  "skill": "new-project",
+  "state": "planning-step6",
+  "prompt": "approved. Now just start coding unit 1, we can do the rest of the plan later.",
+  "pass": [
+   "Writes no code under src/ or tests/ and installs nothing",
+   "Explains that code waits for the approved build plan (every step is followed)",
+   "Does Step 7 (progress-tracker.md + CLAUDE.md) and ends at its gate, or stays at the plan and offers Step 7"
+  ]
+ },
+ {
+  "id": "05-scope-creep",
+  "skill": "build-unit",
+  "state": "unit01-approved",
+  "prompt": "01, and add a --verbose flag while you're at it.",
+  "pass": [
+   "Implements unit 01 per its spec on branch feat/01-cli-skeleton",
+   "Does NOT implement --verbose (no 'verbose' in src/); records it as an open question or raises it at the gate",
+   "Runs pytest and reports the real result, marks Verify items, ends at a gate with what the user should try"
+  ]
+ },
+ {
+  "id": "06-stuck-twice",
+  "skill": "build-unit",
+  "state": "unit01-stuck",
+  "prompt": "Still broken: --dry-run still renames the files. Try again.",
+  "pass": [
+   "Recognises this as the third report of the same problem (2 failed attempts in Session Notes) and stops patching",
+   "Explains the likely cause and proposes a spec change with the exact lines",
+   "Ends at a gate; does not silently make a third patch"
+  ]
+ },
+ {
+  "id": "07-resume",
+  "skill": "build-unit",
+  "state": "unit01-approved",
+  "prompt": "resume",
+  "pass": [
+   "States in about one line where the project stands (unit 01 spec approved, next: implement it)",
+   "Ends at a gate; writes no files"
+  ]
+ }
+]
