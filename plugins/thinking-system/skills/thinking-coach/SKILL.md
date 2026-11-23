@@ -127,7 +127,12 @@ If the user uploads, pastes or mentions data (spreadsheets, documents, PDFs, log
 ## Stage 1 - Decompose
 Decomposition only: no solutions, no evaluation. Build a hierarchy: problem > components > elements. Use the relevant dimensions (people, process steps, time, resources, data). Always include a cost branch, split into short-term and long-term costs. Stop when breaking things down further wouldn't help understanding.
 For any major cost, compare it with the cost of its basic inputs (materials, labour hours, energy, data). A high ratio of price to basic-input cost (Musk's "idiot index") shows where conventions or middlemen hide the most cost, so mark those parts for the audit.
-Then sketch the feedback loops, at most 3, each in one line ("A raises B, which raises A"). Mark each one as reinforcing (it grows) or balancing (it self-corrects). Note how the user's own action might trigger a response, for example a competitor reacting or people gaming a new metric.
+Then apply the four systems lenses, as questions answered in text (no diagram here). Answer each one in 1-3 lines:
+1. Wider boundary: who or what outside the problem reacts to it or to the user's action (customers, crews, contractors, regulators, other teams, product designers)? Name each one's incentive and how it might react, for example people gaming a new metric or a contractor disputing a finding.
+2. Loops over time: sketch the feedback loops, at most 3, each in one line ("A raises B, which raises A"). Mark each one as reinforcing (it grows) or balancing (it self-corrects), and name any delay: an effect that shows up only weeks or months later, or a fix that feels good today and costs tomorrow.
+3. Connections: where do several paths converge on one element (a data source, a person, a step)? That element is a single point of failure: send it to the pre-mortem and to the warning signals.
+4. Leverage: rank the possible interventions from low leverage (willpower, "try harder", treating the symptom) to high (changing an incentive, a rule, a feedback delay or the trigger at its source). Feed high-leverage ones into Recombine as options.
+Test each lens: it counts only if it changes an option, an assumption to audit or a pre-mortem risk. Say in one line which lenses changed something; drop the ones that only restate the decomposition. Mark every link or reaction you suggested, rather than the user stated, as "inferred" and ask the user to confirm or cut it. In the Light tier, skip the lenses or use only the one most likely to matter.
 
 ## Stage 2 - Audit (Bayes)
 List the hidden assumptions, most load-bearing first (if the stress-test route ran, start from its list). For each one:
@@ -179,6 +184,13 @@ End with a short summary: system type, the hard limits, the chosen option or nex
 
 ### Decision page
 Whenever you save a decision at the close (including a provisional close), also turn the whole process into a page, automatically and without asking: read `references/decision-page.md` in this skill's base directory and follow it. You write the content as JSON, and `scripts/render.py` builds the page; publish it as an Artifact and save the link in the journal. Every stage that didn't run appears as "Not run", never with invented results. If the Artifact tool isn't available, give the user the local HTML path instead. Keep the page to one line in your reply: the link, and that it is private until they share it.
+
+### Summary picture (optional)
+After the close in the Standard or Deep tier, also offer in one line a one-page summary picture the user can show to someone who wasn't in the conversation (a manager or team). Draw it only if the user agrees. It is for communicating the decision, not for thinking: draw no diagrams during framing or the stages, unless the user asks for one. The decision page records the whole process; this picture is the short version: the decision and what happens next, nothing else.
+- Content, top to bottom: the goal (one line, with the checkpoint or review date), the chosen option or the proofs or tests to run (and their order, if one depends on another), the top 2-3 risks, and the next step. At most about 10 boxes; no arithmetic, no new claims.
+- Every box comes from what was settled in the conversation. Anything Claude inferred and the user didn't confirm carries the word "inferred" in the box itself; a dashed line or colour alone isn't enough.
+- Render it as an inline diagram where the surface can draw one (the desktop app or chat). In a terminal or where nothing renders, skip the offer, or give the same content as a short text outline.
+- Test to suggest: show it to someone without explaining it and ask what is being decided and what happens next. It works if they answer both without help.
 
 ## Known limits (tell the user when relevant)
 The numbers are estimates. The four-type sorting and D.A.R.E. are useful simplifications, not proven methods. The model treats a decision as a pipeline, while real systems run in loops. Calibration from decision reviews takes many decisions to become reliable. Model routing can set subagent models, but only the user can switch the main conversation's model, and the tiers are a rough guide to difficulty, not a measurement.
