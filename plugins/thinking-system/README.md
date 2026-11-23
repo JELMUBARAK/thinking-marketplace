@@ -5,7 +5,7 @@ A structured thinking coach for hard problems and decisions, with long-term memo
 ## What's inside
 
 **Skills**
-- **thinking-coach** - clarity gate (including a check that the facts behind the problem are true) and framing loop, stakes check, sorting the situation (clear / complicated / complex / chaotic), the D.A.R.E. first-principles loop, hard limits, pre-mortem, independent red team, and a decision based on lowest expected cost among safe options. Saves each decision to the journal.
+- **thinking-coach** - clarity gate (including a check that the facts behind the problem are true) and framing loop, stakes check, sorting the situation (clear / complicated / complex / chaotic), the D.A.R.E. first-principles loop, hard limits, pre-mortem, independent red team, and a decision based on lowest expected cost among safe options. Breaking the problem down uses four systems lenses (wider boundary, loops over time, connections, leverage), each kept only if it changes an option, an assumption or a risk. Saves each decision to the journal.
 - **decision-review** - after you act, compares expected with actual, computes the gap, writes the lesson to the journal and updates your calibration.
 
 **Subagents** (full mode only, for big decisions)
@@ -27,6 +27,7 @@ A structured thinking coach for hard problems and decisions, with long-term memo
 - The layout is fixed: Claude writes the content as JSON and `scripts/render.py` builds the page (all text escaped). The JSON is kept in `~/.claude/thinking-system/pages/`, and the link goes into the journal.
 - After a decision review, a separate review page (expected vs actual, diagnosis, lesson) links back to the decision page.
 - Without the Artifact tool (for example in a chat app or a headless run), you get a local HTML file instead. Setting `THINKING_NO_PUBLISH=1` turns publishing off.
+- In the Standard and Deep tiers, the coach also offers a one-page summary picture: the goal, the chosen option or tests, the top risks and the next step, drawn inline for showing to someone who wasn't there. It is drawn only if you say yes.
 
 **Model routing**
 - From its first reply, the coach sorts the job into a tier: light (haiku), standard (sonnet) or deep (opus).
