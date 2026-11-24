@@ -30,10 +30,17 @@ A structured thinking coach for hard problems and decisions, with long-term memo
 - The close opens with a plain "Bottom line" (what to do, why, what happens if it works or fails, the first step this week) written for someone who skipped the conversation.
 - In the Standard and Deep tiers, the coach also offers a one-page summary picture for showing to someone who wasn't there: the decision first, then why, the numbered steps (the first marked "now"), and both outcomes, in plain words with a colour key. It checks the picture as a stranger would before sending it, and draws it only if you say yes.
 
+**Interactive mode** (Claude desktop app and claude.ai chat)
+- Where the conversation can show inline cards, the coach shows a stage strip with your progress, turns its multiple-choice questions into clickable forms, and ends each stage with buttons: confirm and go on, correct something, run it all, or get the bottom line now.
+- Your own estimates go in empty number fields (low / likely / high), never prefilled sliders, so no default value anchors your answer.
+- In Stage 3, the options appear as cards with their probabilities, cost ranges and weak points, and an optional slider shows where the ranking flips.
+- The reasoning and arithmetic stay in the text. In a terminal or IDE panel, nothing changes. Say you prefer text and the cards stop.
+
 **Model routing**
 - From its first reply, the coach sorts the job into a tier: light (haiku), standard (sonnet) or deep (opus).
 - Subagents run on the model their tier sets (librarian: haiku, researcher and quant: sonnet, red-team: opus) and step up one level only for harder jobs.
 - The coach can't switch the main conversation's model. It suggests `/model <name>` once when the current model is bigger or smaller than the job needs.
+- Reply length follows the tier too: about 150 words in light, about 250 words of prose per stage in standard and about 400 in deep (tables and arithmetic not counted). Each reply opens with what changed and doesn't repeat earlier stages.
 
 **Memory**
 - A decision journal at `~/.claude/thinking-system/journal.jsonl` (change it with the `THINKING_JOURNAL` environment variable). It lives outside the plugin, so updates never erase it.
