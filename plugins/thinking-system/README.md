@@ -27,7 +27,8 @@ A structured thinking coach for hard problems and decisions, with long-term memo
 - The layout is fixed: Claude writes the content as JSON and `scripts/render.py` builds the page (all text escaped). The JSON is kept in `~/.claude/thinking-system/pages/`, and the link goes into the journal.
 - After a decision review, a separate review page (expected vs actual, diagnosis, lesson) links back to the decision page.
 - Without the Artifact tool (for example in a chat app or a headless run), you get a local HTML file instead. Setting `THINKING_NO_PUBLISH=1` turns publishing off.
-- In the Standard and Deep tiers, the coach also offers a one-page summary picture: the goal, the chosen option or tests, the top risks and the next step, drawn inline for showing to someone who wasn't there. It is drawn only if you say yes.
+- The close opens with a plain "Bottom line" (what to do, why, what happens if it works or fails, the first step this week) written for someone who skipped the conversation.
+- In the Standard and Deep tiers, the coach also offers a one-page summary picture for showing to someone who wasn't there: the decision first, then why, the numbered steps (the first marked "now"), and both outcomes, in plain words with a colour key. It checks the picture as a stranger would before sending it, and draws it only if you say yes.
 
 **Model routing**
 - From its first reply, the coach sorts the job into a tier: light (haiku), standard (sonnet) or deep (opus).
