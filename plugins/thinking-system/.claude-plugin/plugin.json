@@ -1,6 +1,6 @@
 {
   "name": "thinking-system",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "A structured thinking coach for hard problems and decisions: problem framing, system sorting, first-principles D.A.R.E. loop, cost-based decisions with safeguards, researcher/quant/red-team/librarian subagents, and a decision journal for long-term memory and calibration.",
   "keywords": [
     "decision-making",
