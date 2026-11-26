@@ -2,7 +2,7 @@
 
 These are the prompts used in STEPS.md, adapted from the Six-File Context System README. The original's code-standards prompt
 was a copy of the overview prompt; it is rewritten here. Wherever a prompt says "the planning notes", give
-it `context/_planning-notes.md` and the `types/<type>.md` add-on.
+it `context/_planning-notes.md` and the `context/kit/<type>.md` add-on.
 
 ---
 
@@ -29,7 +29,7 @@ success criteria that can be checked ("a user can X"). Plain Markdown, specific,
 ## architecture.md (Step 3)
 
 ```
-From the planning notes and types/<type>.md, write context/architecture.md using the template.
+From the planning notes and context/kit/<type>.md, write context/architecture.md using the template.
 Include: stack table (layer, technology, role), system boundaries with real folder names,
 storage model, access model, secrets, the verify command, and at least 4 invariants
 written as rules. Use tables where they help. Be specific.
@@ -56,7 +56,7 @@ who reads it, its exact format, and an example. Add the style rules and any sche
 ## code-standards.md (Step 5)
 
 ```
-From the planning notes, architecture.md and types/<type>.md, write context/code-standards.md
+From the planning notes, architecture.md and context/kit/<type>.md, write context/code-standards.md
 using the template. Include: general principles, rules for each language used,
 framework or platform conventions, styling or output rules, interface rules (routes, skills,
 CLI, stages), data and storage rules, error and logging rules, testing rules, and file
