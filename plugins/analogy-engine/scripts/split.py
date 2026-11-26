@@ -65,8 +65,14 @@ for k in ("threshold", "stress", "misconception_trap"):
     if allk[k] < 4:
         warnings.append(f"only {allk[k]} {k}, expected 4")
 defs = Counter(q.get("definition") for q in qs)
-if len(defs) > 1 and len(set(defs.values())) > 1:
-    warnings.append(f"uneven definitions {dict(defs)}, expected 4 each")
+named = [k for k in defs if k is not None]
+if named:
+    # Values dispute: 4 neutral, then 6 per definition (2 definitions) or 4 per definition (3), 16 in all.
+    per_def = {2: 6, 3: 4}.get(len(named))
+    if per_def is None:
+        warnings.append(f"{len(named)} definitions, expected 2 or 3")
+    elif defs[None] != 4 or any(defs[k] != per_def for k in named):
+        warnings.append(f"uneven definitions {dict(defs)}, expected 4 neutral and {per_def} per definition")
 
 print(json.dumps({"seed": seed, "warnings": warnings, "total": len(qs), "practice": len(practice), "test": len(test),
                   "practice_kinds": kinds(practice), "test_kinds": kinds(test)}))
