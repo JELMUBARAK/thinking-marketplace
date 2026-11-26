@@ -32,9 +32,11 @@ Route: meaning disputed (values) -> one machine per definition, shown side by si
 4. If no machine covers at least two thirds of the rules, add a machine to `machines.md` (with its real rules) or route to simulation. Don't stretch a machine.
 
 ## 4. Practice run (agent call 2: `scorer` on the practice set)
-Brief: concept, facts (id, claim, verified), misconceptions, the analogy and its rows, the scorer rules from `scoring-rubric.md`, and the practice file path (the scorer reads it). It writes its grid to `analogy-runs/<slug>.practice-scores.json` (don't open it) and replies with counts, each candidate's disqualifiers (D1 / D2 or none), and the **rule ids** behind any flip, miss, gap or told, never the questions.
+Brief: concept, facts (id, claim, verified), misconceptions, the analogy and its rows, the scorer rules from `scoring-rubric.md`, and the practice file path (the scorer reads it). It writes its grid to `analogy-runs/<slug>.practice-scores.json` (don't open it) and replies with counts, each candidate's disqualifiers (D1 with the rule id of the row that cites no verified fact, D2 with the id of the misconception the machine teaches, or none), and the **rule ids** behind any flip, miss, gap or told, never the questions.
 
 Fix every rule it names, once: rewrite that rule's sentence and row so the machine itself gives the answer, or mark it as a stated break. A break line says in one line what the machine gets wrong; answers that come only from a break line score `told`, which never counts as a match. A failure marked "none" means the rule table is missing a rule; add one only if a verified fact supports it, otherwise note the gap.
+
+Fix disqualifiers the same way, once, before the test run. A D1 names a row: cite a verified fact for it, or turn it into a stated break. A D2 names a misconception the machine teaches: go back to step 3 and pick another machine (never one listed as teaching that misconception), then match it row by row. A candidate still disqualified at the test run fails (step 6).
 
 ## 5. Test run (agent call 3: `scorer` on the test set)
 Same brief with the test file path and output `analogy-runs/<slug>.test-scores.json`. No fixing after this: the test score is the result.
