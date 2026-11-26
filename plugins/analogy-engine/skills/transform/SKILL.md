@@ -36,7 +36,7 @@ Brief: concept, facts (id, claim, verified), misconceptions, the analogy and its
 
 Fix every rule it names, once: rewrite that rule's sentence and row so the machine itself gives the answer, or mark it as a stated break. A break line says in one line what the machine gets wrong; answers that come only from a break line score `told`, which never counts as a match. A failure marked "none" means the rule table is missing a rule; add one only if a verified fact supports it, otherwise note the gap.
 
-Fix disqualifiers the same way, once, before the test run. A D1 names a row: cite a verified fact for it, or turn it into a stated break. A D2 names a misconception the machine teaches: go back to step 3 and pick another machine (never one listed as teaching that misconception), then match it row by row. A candidate still disqualified at the test run fails (step 6).
+Fix disqualifiers the same way, once, before the test run. A D1 names a row: give it the verified fact ids its rule cites (every rule rests on verified facts). This applies to break rows too; turning a row into a break does not clear a D1. A D2 names a misconception the machine teaches: go back to step 3 and pick another machine (never one listed as teaching that misconception), then match it row by row. A candidate still disqualified at the test run fails (step 6).
 
 ## 5. Test run (agent call 3: `scorer` on the test set)
 Same brief with the test file path and output `analogy-runs/<slug>.test-scores.json`. No fixing after this: the test score is the result.
