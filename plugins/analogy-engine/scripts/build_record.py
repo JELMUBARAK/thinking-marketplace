@@ -89,6 +89,9 @@ def main():
             problems.append("a candidate has no id")
             continue
         own_def = c.get("definition")
+        # A candidate the test scorer disqualified fails anyway (decide()), so its uncited or
+        # unverified rows must not block the record that shows that fail.
+        disq = ((a.get("test_counts") or {}).get(cid) or {}).get("disqualified") is True
         for row in c.get("mapping", []):
             m = re.match(r"\s*(R\d+[a-z]?)\b", str(row.get("rule", "")))
             if not m:
@@ -97,7 +100,7 @@ def main():
             row["rule"] = m.group(1)
             if row["rule"] not in rules:
                 problems.append(f"{cid}: row cites unknown rule {row['rule']}")
-            if row.get("source") is not None:
+            if row.get("source") is not None and not disq:
                 for fid in row.get("fact_ids") or []:
                     if fid not in verified:
                         problems.append(f"{cid}: {row['rule']} rests on {'unknown' if fid not in facts else 'unverified'} fact {fid}")
