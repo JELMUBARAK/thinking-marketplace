@@ -65,7 +65,7 @@ def find_drawing(machine):
     return None
 
 
-def machine_block(c, rules, show_heading):
+def machine_block(c, rules, show_heading, show_drawing=True):
     rows = c.get("mapping", [])
     mapped = [r for r in rows if r.get("source")]
     breaks = [clean_break(r.get("break")) for r in rows if r.get("break") or not r.get("source")]
@@ -74,7 +74,7 @@ def machine_block(c, rules, show_heading):
     if show_heading:
         out.append(f"<h3>{esc(c.get('definition') or c.get('machine'))}</h3>")
     out.append(f"<h1>Think of it as {esc(lower_first(c.get('machine')))}</h1>")
-    drawing = find_drawing(c.get("machine"))
+    drawing = find_drawing(c.get("machine")) if show_drawing else None
     if drawing:
         out.append(f'<div class="drawing">{drawing}</div>')
     if c.get("analogy"):
@@ -134,9 +134,12 @@ def main():
             body.append(machine_block(picked, rules, False))
     elif outcome == "side_by_side":
         body.append('<p class="note">Each definition gets its own picture. None is ranked above the others.</p>')
+        # Drawings only when every candidate passes (rough_model is not a pass, as in build_record.py),
+        # so the presentation favours none (SKILL.md step 6).
+        all_pass = bool(cands) and all(per.get(c.get("id"), {}).get("outcome") == "pass" for c in cands)
         for c in cands:
             label = per.get(c.get("id"), {}).get("outcome")
-            block = machine_block(c, rules, True)
+            block = machine_block(c, rules, True, show_drawing=all_pass)
             if label == "rough_model":
                 block += '<p class="note">Rough picture for this definition.</p>'
             if label in ("pass", "rough_model"):

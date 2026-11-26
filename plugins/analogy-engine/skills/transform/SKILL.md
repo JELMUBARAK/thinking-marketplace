@@ -32,14 +32,17 @@ Route: meaning disputed (values) -> one machine per definition, shown side by si
 4. If no machine covers at least two thirds of the rules, add a machine to `machines.md` (with its real rules) or route to simulation. Don't stretch a machine.
 
 ## 4. Practice run (agent call 2: `scorer` on the practice set)
-Brief: concept, facts (id, claim, verified), misconceptions, the analogy and its rows, the scorer rules from `scoring-rubric.md`, and the practice file path (the scorer reads it). It writes its grid to `analogy-runs/<slug>.practice-scores.json` (don't open it) and replies with counts plus the **rule ids** behind any flip, miss, gap or told, never the questions.
+Brief: concept, facts (id, claim, verified), misconceptions, the analogy and its rows, the scorer rules from `scoring-rubric.md`, and the practice file path (the scorer reads it). It writes its grid to `analogy-runs/<slug>.practice-scores.json` (don't open it) and replies with counts, each candidate's disqualifiers (D1 with the rule id of the row that cites no verified fact, D2 with the id of the misconception the machine teaches, or none), and the **rule ids** behind any flip, miss, gap or told, never the questions.
 
 Fix every rule it names, once: rewrite that rule's sentence and row so the machine itself gives the answer, or mark it as a stated break. A break line says in one line what the machine gets wrong; answers that come only from a break line score `told`, which never counts as a match. A failure marked "none" means the rule table is missing a rule; add one only if a verified fact supports it, otherwise note the gap.
+
+Fix disqualifiers the same way, once, before the test run. A D1 names a row: give it the verified fact ids its rule cites (every rule rests on verified facts). This applies to break rows too; turning a row into a break does not clear a D1. A D2 names a misconception the machine teaches: go back to step 3 and pick another machine (never one listed as teaching that misconception), then match it row by row. A candidate still disqualified at the test run fails (step 6).
 
 ## 5. Test run (agent call 3: `scorer` on the test set)
 Same brief with the test file path and output `analogy-runs/<slug>.test-scores.json`. No fixing after this: the test score is the result.
 
 ## 6. Decide (on the test set only; `build_record.py` applies these rules)
+- **Disqualified first**: a candidate the test scorer marks D1 or D2 fails, whatever its counts; record `"disqualified": true` in its test counts. The rules below apply only to candidates that are not disqualified.
 - **pass**: at least 7 of 8 match (`told` is not a match), no flip, no gap.
 - **rough model**: at least 5 of 8 and no flip; show the breaks.
 - Otherwise **simulation only** (formal concepts) or **reject**, with the partial matches and a "no everyday machine does X" line.
